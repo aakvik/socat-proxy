@@ -1,0 +1,14 @@
+[Unit]
+Description=Socat Service for %I
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/socat-proxy
+ExecStart=/opt/socat-proxy/run_socat.sh %i
+ExecStop=/bin/kill -s TERM $MAINPID
+PIDFile=/var/run/socat_%i.pid
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
