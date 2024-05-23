@@ -48,12 +48,20 @@ CONFIG_FILE="$CONFIG_DIR/${SOURCE}.json"
 # Check if the configuration file exists and is not empty
 if [ -s "$CONFIG_FILE" ]; then
 	# Append the new configuration to the existing ones
-	jq --arg target "$TARGET" --arg port "$PORT" --arg protocol "$PROTOCOL" --arg ipversion "$IPVERSION" \
-		'. += [{"target": $target, "port": $port, "protocol": $protocol, "ipversion": $ipversion}]' "$CONFIG_FILE" >tmp.$$.json && mv tmp.$$.json "$CONFIG_FILE"
+	jq --arg target "$TARGET" \
+		--arg port "$PORT" \
+		--arg protocol "$PROTOCOL" \
+		--arg ipversion "$IPVERSION" \
+		'. += [{"target": $target, "port": $port, "protocol": $protocol, "ipversion": $ipversion}]' \
+		"$CONFIG_FILE" >tmp.$$.json && mv tmp.$$.json "$CONFIG_FILE"
 else
 	# Create a new configuration file with the new configuration
-	jq -n --arg target "$TARGET" --arg port "$PORT" --arg protocol "$PROTOCOL" --arg ipversion "$IPVERSION" \
-		'[{"target": $target, "port": $port, "protocol": $protocol, "ipversion": $ipversion}]' >"$CONFIG_FILE"
+	jq -n --arg target "$TARGET" \
+		--arg port "$PORT" \
+		--arg protocol "$PROTOCOL" \
+		--arg ipversion "$IPVERSION" \
+		'[{"target": $target, "port": $port, "protocol": $protocol, "ipversion": $ipversion}]' \
+		>"$CONFIG_FILE"
 fi
 
 echo "Configuration saved to $CONFIG_FILE"
