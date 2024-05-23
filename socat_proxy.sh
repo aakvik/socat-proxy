@@ -20,7 +20,7 @@ run_socat() {
 		IP_CHECK="ip addr show dev $interface | grep -w $source"
 	elif [ "$ipversion" == "6" ]; then
 		IP_OPT="TCP6"
-		IP_CMD="ip -6 addr add $source dev $interface"
+		IP_CMD="ip -6 addr add $source/64 dev $interface"
 		IP_CHECK="ip -6 addr show dev $interface | grep -w $source"
 	else
 		echo "Error: Invalid IP version"
