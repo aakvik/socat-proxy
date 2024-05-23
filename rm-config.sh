@@ -46,7 +46,7 @@ if systemctl is-enabled --quiet "$SERVICE_NAME"; then
 	systemctl disable "$SERVICE_NAME"
 fi
 
-# Remove the configuration file
+# Remove the configuration file if it exists
 if [ -f "$CONFIG_FILE" ]; then
 	echo "Removing configuration file $CONFIG_FILE..."
 	rm -f "$CONFIG_FILE"
