@@ -47,13 +47,13 @@ CONFIG_FILE="$CONFIG_DIR/${SOURCE}.json"
 
 # Check if the configuration file exists and is not empty
 if [ -s "$CONFIG_FILE" ]; then
-    # Append the new configuration to the existing ones
-    jq --arg target "$TARGET" --arg port "$PORT" --arg protocol "$PROTOCOL" --arg ipversion "$IPVERSION" \
-       '. += [{"target": $target, "port": $port, "protocol": $protocol, "ipversion": $ipversion}]' "$CONFIG_FILE" > tmp.$$.json && mv tmp.$$.json "$CONFIG_FILE"
+	# Append the new configuration to the existing ones
+	jq --arg target "$TARGET" --arg port "$PORT" --arg protocol "$PROTOCOL" --arg ipversion "$IPVERSION" \
+		'. += [{"target": $target, "port": $port, "protocol": $protocol, "ipversion": $ipversion}]' "$CONFIG_FILE" >tmp.$$.json && mv tmp.$$.json "$CONFIG_FILE"
 else
-    # Create a new configuration file with the new configuration
-    jq -n --arg target "$TARGET" --arg port "$PORT" --arg protocol "$PROTOCOL" --arg ipversion "$IPVERSION" \
-       '[{"target": $target, "port": $port, "protocol": $protocol, "ipversion": $ipversion}]' > "$CONFIG_FILE"
+	# Create a new configuration file with the new configuration
+	jq -n --arg target "$TARGET" --arg port "$PORT" --arg protocol "$PROTOCOL" --arg ipversion "$IPVERSION" \
+		'[{"target": $target, "port": $port, "protocol": $protocol, "ipversion": $ipversion}]' >"$CONFIG_FILE"
 fi
 
 echo "Configuration saved to $CONFIG_FILE"
@@ -64,10 +64,10 @@ systemctl daemon-reload
 # Enable and restart the service
 SERVICE_NAME="socat@${SOURCE}.service"
 if systemctl is-active --quiet "$SERVICE_NAME"; then
-    systemctl reload-or-restart "$SERVICE_NAME"
-    echo "Service $SERVICE_NAME reloaded or restarted."
+	systemctl reload-or-restart "$SERVICE_NAME"
+	echo "Service $SERVICE_NAME reloaded or restarted."
 else
-    systemctl enable "$SERVICE_NAME"
-    systemctl start "$SERVICE_NAME"
-    echo "Service $SERVICE_NAME enabled and started."
+	systemctl enable "$SERVICE_NAME"
+	systemctl start "$SERVICE_NAME"
+	echo "Service $SERVICE_NAME enabled and started."
 fi
