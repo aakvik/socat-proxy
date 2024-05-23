@@ -50,10 +50,10 @@ run_socat() {
 
 	# Check if the source IP is already configured
 	if eval $IP_CHECK >/dev/null 2>&1; then
-		echo "Source IP $source is already configured on the interface $interface."
+		echo "Source IP $source is assigned to $interface."
 	else
 		# Bring up the source IP
-		echo "Bringing up source IP: $source on interface $interface"
+		echo "Bringing up source IP: $source on $interface"
 		eval $IP_CMD
 		if [ $? -ne 0 ]; then
 			echo "Error: Failed to bring up source IP"
@@ -64,7 +64,9 @@ run_socat() {
 	fi
 
 	# Create the socat command
-	SOCAT_CMD="socat ${IP_OPT}-LISTEN:${port},fork,bind=${source} ${IP_OPT}:${target}:${port}"
+	SOCAT_CMD="socat \
+    ${IP_OPT}-LISTEN:${port},fork,bind=${source} \
+    ${IP_OPT}:${target}:${port}"
 
 	echo "Running socat command: $SOCAT_CMD"
 
