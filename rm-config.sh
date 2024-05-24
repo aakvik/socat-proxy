@@ -1,6 +1,8 @@
 #!/bin/bash
 
-CONFIG_DIR="configs"
+parent_script_path=$(dirname "$0")
+
+CONFIG_DIR="$parent_script_path/configs"
 PID_FILE_DIR="/var/run"
 SERVICE_TEMPLATE="socat@.service"
 
