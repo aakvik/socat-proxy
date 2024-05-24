@@ -1,6 +1,8 @@
 #!/bin/bash
 
-CONFIG_FILE="configs/$1.json"
+parent_script_path=$(dirname "$0")
+
+CONFIG_FILE="$parent_script_path/configs/$1.json"
 PID_FILE="/var/run/socat_${1}.pid"
 
 if [ ! -f "$CONFIG_FILE" ]; then
