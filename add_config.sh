@@ -5,7 +5,7 @@ parent_script_path=$(dirname "$0")
 CONFIG_DIR="$parent_script_path/configs"
 
 # Function to display usage
-# fix dump to usage when no args applied
+#TODO: dump to usage when no args applied
 usage() {
 	echo "Usage: $0 --source SOURCE --target TARGET --port PORT --protocol PROTOCOL --ipversion IPVERSION"
 	exit 1

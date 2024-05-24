@@ -8,7 +8,7 @@ SERVICE_TEMPLATE="socat@.service"
 
 # Function to display usage
 usage() {
-	echo "Usage: $0 --source SOURCE"
+	echo "Usage: $0 --source SOURCE --ipversion IPVERSION"
 	exit 1
 }
 
@@ -19,6 +19,10 @@ while [[ $# -gt 0 ]]; do
 		SOURCE="$2"
 		shift 2
 		;;
+	--ipversion)
+		IPVERSION="$2"
+		shift 2
+		;;
 	*)
 		echo "Unknown argument: $1"
 		usage
@@ -26,9 +30,9 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-# Check if the source argument is provided
-if [ -z "$SOURCE" ]; then
-	echo "Error: Missing source argument"
+# Check if the source and ipversion arguments are provided
+if [ -z "$SOURCE" ] || [ -z "$IPVERSION" ]; then
+	echo "Error: Missing source or ipversion argument"
 	usage
 fi
 
@@ -47,6 +51,27 @@ if systemctl is-enabled --quiet "$SERVICE_NAME"; then
 	echo "Disabling service $SERVICE_NAME..."
 	systemctl disable "$SERVICE_NAME"
 fi
+
+# Detect the interface dynamically
+interface=$(ip route | grep default | awk '{print $5}')
+
+if [ -z "$interface" ]; then
+	echo "Error: Could not determine interface for IP $SOURCE"
+	exit 1
+fi
+
+# Remove the IP address associated with the source
+if [ "$IPVERSION" == "4" ]; then
+	IP_DEL_CMD="ip addr del $SOURCE/24 dev $interface"
+elif [ "$IPVERSION" == "6" ]; then
+	IP_DEL_CMD="ip -6 addr del $SOURCE/64 dev $interface"
+else
+	echo "Error: Invalid IP version"
+	exit 1
+fi
+
+echo "Removing IP address $SOURCE from $interface"
+eval $IP_DEL_CMD
 
 # Remove the configuration file
 if [ -f "$CONFIG_FILE" ]; then
