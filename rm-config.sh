@@ -12,6 +12,11 @@ usage() {
 	exit 1
 }
 
+# Function to normalize IPv6 addresses
+normalize_ipv6() {
+	python3 -c "import ipaddress; print(ipaddress.IPv6Address('$1'))"
+}
+
 # Parse arguments
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -34,6 +39,11 @@ done
 if [ -z "$SOURCE" ] || [ -z "$IPVERSION" ]; then
 	echo "Error: Missing source or ipversion argument"
 	usage
+fi
+
+# Normalize the source IP address if it is IPv6
+if [ "$IPVERSION" -eq 6 ]; then
+	SOURCE=$(normalize_ipv6 "$SOURCE")
 fi
 
 # Define paths based on source IP

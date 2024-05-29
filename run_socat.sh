@@ -10,6 +10,11 @@ if [ ! -f "$CONFIG_FILE" ]; then
 	exit 1
 fi
 
+# Function to normalize IPv6 addresses
+normalize_ipv6() {
+	python3 -c "import ipaddress; print(ipaddress.IPv6Address('$1'))"
+}
+
 # Function to bring up the source IP and run socat
 run_socat() {
 	local source="$1"
@@ -18,6 +23,12 @@ run_socat() {
 	local protocol="$4"
 	local ipversion="$5"
 	local interface
+
+	# Normalize the source and target IP addresses if they are IPv6
+	if [ "$ipversion" == "6" ]; then
+		source=$(normalize_ipv6 "$source")
+		target=$(normalize_ipv6 "$target")
+	fi
 
 	# Detect the interface dynamically
 	interface=$(ip route | grep default | awk '{print $5}')
